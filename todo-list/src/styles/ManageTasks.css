@@ -1,0 +1,59 @@
+/* HomePage.css */
+
+h1 {
+    text-align: center;
+    padding: 20px;
+}
+
+.taskList {
+    display: grid;
+    gap: 20px;
+    padding: 20px;
+}
+
+.taskItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+.taskItem button {
+    border: none;
+    background: #f44336;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.taskItem button:hover {
+    background: #d32f2f;
+}
+
+.taskCompleted {
+    text-decoration: line-through;
+}
+/* App.css */
+
+nav ul {
+  display: flex;
+  list-style-type: none;
+  padding: 10px;
+}
+
+nav ul li {
+  margin-right: 20px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #333;
+}
+
+nav ul li a:hover {
+    color: #777;
+}
