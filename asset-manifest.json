@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/tgc-to-do-app/static/css/main.f6ab3863.css",
+    "main.js": "/tgc-to-do-app/static/js/main.239b8842.js",
+    "index.html": "/tgc-to-do-app/index.html",
+    "main.f6ab3863.css.map": "/tgc-to-do-app/static/css/main.f6ab3863.css.map",
+    "main.239b8842.js.map": "/tgc-to-do-app/static/js/main.239b8842.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f6ab3863.css",
+    "static/js/main.239b8842.js"
+  ]
+}
