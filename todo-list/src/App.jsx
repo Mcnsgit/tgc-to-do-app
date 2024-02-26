@@ -1,113 +1,79 @@
 import React, { useState } from 'react';
 import './App.css';
 import ManageTasks from './components/ManageTasks';
-// Remove the unused import statements
-// import AllTasks from './AllTasks';
-// import AllLists from '../AllLists';
-// import ManageTasks from './ManageTasks';
+import AllTasks from './components/AllTasks';
 
 
 
- 
-const App = () => {    
-  const [tasks, setTasks] = useState([    
 
-    { id: 1, text: 'Task 1', isCompleted: false, priority: 1, date: new Date() },
-    { id: 2, text: 'Task 2', isCompleted: false, priority: 2, date: new Date() },
-    { id: 3, text: 'Task 3', isCompleted: false, priority: 3, date: new Date() }
+const App = () => {
+  const [tasks, setTasks] = useState([
+    { id: 1, text: 'Task 1', isCompleted: false, priority: 1 , date: new Date() },
+    { id: 2, text: 'Task 2', isCompleted: false, priority: 2 , date: new Date()},
+    { id: 3, text: 'Task 3', isCompleted: false, priority: 3 ,date: new Date()}
+  ]);
 
-  ]);  const [selectedOption, setSelectedOption] = useState(null);
  const addTask = (newTaskText) => {
-    setTasks(prevTasks => [
-      ...prevTasks,
-      { id: prevTasks.length + 1, text: newTaskText, isCompleted: false }
-    ]);
+  const newId = tasks.length > 0 ? Math.max(...tasks.map(tasks => tasks.id)) + 1 : 1;
+    setTasks([...tasks, {id:newId, text: newTaskText, isCompleted:false, priority: 1, date: new Date()}]);
+    
   };
-
   const deleteTask = (taskId) => {
-    setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
+    setTasks(tasks.filter(tasks => tasks.id !== taskId));
   };
 
   const markAsComplete = (taskId) => {
-    setTasks(prevTasks =>
-      prevTasks.map(task =>
-        task.id === taskId ? { ...task, isCompleted: !task.isCompleted } : task
-      )
-    );
+    setTasks(tasks.map(task => task.id === taskId ? { ...task, isCompleted: !task.isCompleted } : task));
   };
+
   const updateTask = (taskId, newText) => {
-    setTasks(prevTasks =>
-      prevTasks.map(task =>
-        task.id === taskId ? { ...task, text: newText } : task
-      )
-    );
+    setTasks(tasks.map(task => task.id === taskId ? { ...task, text: newText } : task));
   };
-    
 
-    const sortTasks = () => {
+  const handlePriorityChange = (taskId, newPriority) => {
+    setTasks(tasks.map(task => task.id === taskId ? { ...task, priority: newPriority } : task));
+  };
 
-      if (selectedOption === 'alphabetical') {
-        const sortedTasks = [...tasks].sort((a, b) => a.text.localeCompare(b.text));
-        setTasks(sortedTasks);
-        return;
-      }
-      if (selectedOption === 'priority') {
-        const sortedTasks = [...tasks].sort((a, b) => a.priority - b.priority);
-        setTasks(sortedTasks);
-        return;
-      }
-      if (selectedOption === 'date') {
-        const sortedTasks = [...tasks].sort((a, b) => a.date - b.date);
-        setTasks(sortedTasks);
-        return;
-      }
-      if (selectedOption === 'status') {
-        const sortedTasks = [...tasks].sort((a, b) => a.isCompleted - b.isCompleted);
-        setTasks(sortedTasks);
-        return;
-      }
-      if (selectedOption === 'default') {
-        return;
+  const sortTasks = (selectedOption) => {
+    switch (selectedOption) {
+      case 'alphabetical':
+        setTasks([...tasks].sort((a, b) => a.text.localeCompare(b.text)));
+        break;
+      case 'priority':
+        setTasks([...tasks].sort((a, b) => a.priority - b.priority));
+        break;
+      case 'date':
+        setTasks([...tasks].sort((a, b) => a.date - b.date));
+        break;
+      case 'status':
+        setTasks([...tasks].sort((a, b) => b.isCompleted - a.isCompleted));
+        break;
+      default:
+        // No sorting or a default sort can be implemented here
+        break;
+    }
+  };
 
-      }
+  return (
+    <div className="App">
+      <header className="App-header">
+        <p>Task Manager</p>
+      </header>
+      <ManageTasks 
+      addTask={addTask} 
+      tasks={tasks} 
+      setTasks={setTasks} 
+      sortTasks={sortTasks}
+     />
+     <AllTasks
+      tasks={tasks}
+      markAsCompleted={markAsComplete}
+      deleteTask={deleteTask}
+      updateTask={updateTask}
+      handlePriorityChange={handlePriorityChange}
+      />
+    </div>
+  );
+};
 
-      const sortedTasks = [...tasks].reverse();
-      setTasks(sortedTasks);
-    };
-
-    return (
-      <div>
-        <p>HomePage</p>
-        <div>
-          <h3>Select an option to rearrange tasks:</h3>
-          <select onChange={(e) => setSelectedOption(e.target.value)}>
-            <option value="default">Default</option>
-            <option value="alphabetical">Alphabetical Order</option>
-            <option value="priority">Priority</option>
-            <option value="date">Date</option>
-            <option value="status">Status</option>
-          </select>
-          <button onClick={sortTasks}>Sort</button>
-
-          <div>
-            <nav className='menu'>
-
-            </nav>
-            <main>
-              <ManageTasks
-                tasks={tasks}
-                addTask={addTask}
-                deleteTask={deleteTask}
-                markAsComplete={markAsComplete}
-                updateTask={updateTask}
-                setTasks={setTasks}
-              />
-            </main>
-          </div>
-          </div>
-          </div>
-          );
-          };
-
-
-          export default App;
+export default App;

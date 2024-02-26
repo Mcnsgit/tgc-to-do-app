@@ -1,111 +1,68 @@
-import React, { useState } from 'react';
+import React from "react";
+import AllTasks from "./AllTasks";
 
-const ManageTasks = ({ addTask, tasks, setTasks }) => {
-    const [newTaskText, setNewTaskText] = useState('');
-
-    const handleInputChange = (e) => {
-        setNewTaskText(e.target.value);
+class ManageTasks extends React.Component {
+    state = {
+        newTaskText: '',
+        selectedOption: 'default',
     };
 
-    const handleSubmit = (e) => {
+    handleInputChange = (e) => {
+        this.setState({ newTaskText: e.target.value });
+    };
+
+    handleSubmit = (e) => {
         e.preventDefault();
+        const { newTaskText } = this.state;
         if (newTaskText.trim() !== '') {
-            addTask(newTaskText);
-            setNewTaskText('');
+          this.props.addTask(newTaskText);
+          this.setState({ newTaskText: '' });
         }
     };
 
-    const deleteTask = (taskId) => {
-        const updatedTasks = tasks.filter(task => task.id !== taskId);
-        setTasks(updatedTasks);
+    handlePriorityChange = (taskId, newPriority) => {
+        this.props.handlePriorityChange(taskId, newPriority);
     };
 
-    const handlePriorityChange = (taskId, newPriority) => {
-        const updatedTasks = tasks.map(task => {
-            if (task.id === taskId) {
-                return { ...task, priority: newPriority };
-            }
-            return task;
-        });
-        setTasks(updatedTasks);
+    sortTasks = () => {
+        const { selectedOption } = this.state;
+        this.props.sortTasks(selectedOption);
     };
+    render() {
+        const { tasks, deleteTask, markAsComplete, updateTask } = this.props;
+        const { newTaskText, selectedOption } = this.state;
 
-    const handleTextChange = (taskId, newText) => {
-        const updatedTasks = tasks.map(task => {
-            if (task.id === taskId) {
-                return { ...task, text: newText };
-            }
-            return task;
-        });
-        setTasks(updatedTasks);
-    };
-    const performSortingAndOptimization = (selectedOption) => {
-        let sortedTasks = [...tasks];
-        switch (selectedOption) {
-            case 'alphabetical':
-                sortedTasks.sort((a, b) => a.text.localeCompare(b.text)); // Sort tasks alphabetically based on text
-                break;
-            case 'priority':
-                sortedTasks.sort((a, b) => a.priority - b.priority); // Sort tasks by priority
-                break;
-            // Add more cases for additional options if needed
-            default:
-                // Default case: do nothing or apply a default sorting/optimization logic
-                break;
-        }
-        // Perform any additional optimization steps based on the selected option
-        return sortedTasks;
-    };
-
-    // Example usage
-    const selectedOption = 'alphabetical';
-    
-    console.log('Original tasks:', tasks);
-    const sortedAndOptimizedTasks = performSortingAndOptimization(selectedOption);
-    console.log(`Sorted and optimized tasks based on '${selectedOption}':`, sortedAndOptimizedTasks);
-
-    return (
-        <div>
-            <p>ManageTasks</p>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    value={newTaskText}
-                    onChange={handleInputChange}
+        return (
+            <><div className="manage">
+                <h2><b>Manage Tasks</b></h2>                    
+                <form onSubmit={this.handleSubmit}>
+                    <input
+                        placeholder="Add task"
+                        type="text"
+                        value={newTaskText}
+                        onChange={this.handleInputChange}
+                    />
+                    <button type="submit">Add Task</button>
+                </form>
+                </div>
+                <div className="sort">
+                <select value={selectedOption} onChange={(e) => this.setState({ selectedOption: e.target.value })} title="Sort by">
+                    <option value="default">Default</option>
+                    <option value="alphabetical">Alphabetical</option>
+                    <option value="priority">Priority</option>
+                    <option value="date">Date</option>
+                    <option value="status">Status</option>
+                </select>
+                <button onClick={this.sortTasks}>Sort</button>
+                <AllTasks
+                    tasks={tasks}
+                    deleteTask={deleteTask}
+                    markAsComplete={markAsComplete}
+                    updateTask={updateTask}
                 />
-                <button type="submit">Add Task</button>
-            </form>
-            <ul>
-                {tasks && tasks.length > 0 ? (
-                    tasks.map(task => (
-                        <li key={task.id}>
-                            <input
-                                type="text"
-                                value={task.text}
-                                onChange={(e) => handleTextChange(task.id, e.target.value)}
-                            />
-                            <input
-                            type="input"
-                            name="priority"
-                            id="priority"
-                            min="1"
-                            max="5"
-                            step="1"
-                            defaultValue="1"
-                            value={task.priority || ''}
-                            onChange={(e) => handlePriorityChange(task.id, e.target.value)}
-                            />                        
-                             <button onClick={() => deleteTask(task.id)}>Delete</button>
-
-                        </li>                  
-
-                    ))
-                ) : (
-                    <li>No tasks available</li>
-                )}
-            </ul>
-        </div>
-    );
-};
+            </div></>
+        );
+    }
+}
 
 export default ManageTasks;
